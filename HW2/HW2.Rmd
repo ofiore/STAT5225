@@ -1,0 +1,76 @@
+---
+title: "HW2"
+author: "Owen Fiore"
+date: "2023-02-09"
+output: pdf_document
+---
+
+#2A
+```{r}
+X <- c(1, 3, 5, 9)
+Y <- c(2, 6, 9, 11)
+q2_matrix <- matrix(c(X, Y), nrow = 4, byrow=FALSE, ncol = 2)
+colnames(q2_matrix) <- c("X", "Y")
+q2_matrix
+Z <- 100 + 50*q2_matrix[,1] + 2*(q2_matrix[,1]**2) - 25*q2_matrix[,2] + q2_matrix[,2]**2
+q2_matrix <- cbind(q2_matrix, Z)
+```
+
+#2B
+```{r}
+q2_df <- data.frame(X,Y,Z)
+```
+
+#2C
+```{r}
+q2_lst <- list(X = c(1,3,5,9), Y = c(2,6,9,11))
+Z <- 100 + 50*q2_lst$X + 2*(q2_lst$X**2) - 25*q2_lst$Y + q2_lst$Y**2
+q2_lst$Z <- Z
+q2_lst
+```
+
+#2D
+```{r}
+str(q2_df)
+```
+
+#4
+```{r}
+cat("\n", file = "../STAT5225/Data/geocaching.txt", append = TRUE)
+cache <-read.fwf("../STAT5225/Data/geocaching.txt", widths = c(20,2,6,2,6), col.names=c("Name", "LongDeg", "LongMin", "LatDeg", "LatMin"))
+str(cache)
+```
+
+#6A
+```{r}
+mkt <-read.csv("../STAT5225/Data/stockprices_r.txt", header = FALSE, sep = "\t")
+colnames(mkt) <- c("Stock", "PurchaseDate", "PurchasePrice", "NumShares", "SellDate", "SellPrice")
+```
+
+
+#6B
+```{r}
+mkt$TotalPurhase <- mkt$PurchasePrice*mkt$NumShares
+mkt$TotalSell <- mkt$NumShares*mkt$SellPrice
+mkt$Profit <- mkt$TotalSell - mkt$TotalPur
+blst <- list(mkt$TotalPurhase, mkt$TotalSell, mkt$Profit)
+```
+
+
+#6C
+```{r}
+print(paste(mkt$Stock, "is bought at", paste("$",prettyNum(mkt$PurchasePrice,big.mark = ",", sep ="")), "on", mkt$PurchaseDate))
+```
+
+
+#7A
+```{r}
+bank <- suppressWarnings(read.fwf("../STAT5225/Data/bankdata_r.txt", widths = c(14, 1, 5, 8, 4), col.names =
+                                    c("Name", "Gender", "ID", "Balance", "CreditHistory"), skip = 1, n = 3))
+```
+
+#7B
+```{r}
+str(bank)
+```
+
