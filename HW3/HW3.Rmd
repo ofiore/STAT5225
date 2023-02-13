@@ -1,0 +1,52 @@
+---
+title: "HW3"
+author: "Owen Fiore"
+date: "2023-02-12"
+output: pdf_document
+---
+
+#2
+```{r}
+employee <- read.csv("../../STAT5225/Data/employee.csv", header = FALSE)
+colnames(employee) <- c("ID", "Name", "Department", "DOH", "Salary")
+paste("The occupation of ", employee$Name, "is", employee$Department, "he/she has been in our company since", 
+      as.Date(employee$DOH, "%m/%d/%Y" ), "His/her salary is ", employee$Salary, "per year.")
+```
+
+#6
+```{r}
+library(data.table)
+row1 <- c(23, "D", 1, 1, 2, 2)
+row2 <- c(45, "R", 5, 5, 4, 1)
+row3 <- c(67, "D", 2, 4, 3, 3)
+row4 <- c(39, "R", 4, 4, 4, 4)
+row5 <- c(19, "D", 2, 1, 2, 1)
+row6 <- c(75, "D", 3, 3, 2, 3)
+row7 <- c(57, "R", 4, 3, 4, 4)
+vote <- data.frame(rbind(row1, row2, row3, row4, row5, row6, row7))
+colnames(vote) <- c("AGE", "PARTY", "Q1", "Q2", "Q3", "Q4")
+rownames(vote) <- c()
+#str(vote)
+vote$AGE <- as.numeric(vote$AGE)
+#str(vote)
+#vote
+```
+#6B
+```{r}
+vote$PARTY <- as.factor(vote$PARTY)
+str(vote)
+```
+
+#6C
+```{r}
+vote$Q1 <- factor(vote$Q1, ordered =TRUE)
+vote$Q2 <- factor(vote$Q2, ordered =TRUE)
+vote$Q3 <- factor(vote$Q3, ordered =TRUE)
+vote$Q4 <- factor(vote$Q4, ordered =TRUE)
+```
+
+#6D
+```{r}
+
+```
+
