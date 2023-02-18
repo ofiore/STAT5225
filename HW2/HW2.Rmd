@@ -14,11 +14,13 @@ colnames(q2_matrix) <- c("X", "Y")
 q2_matrix
 Z <- 100 + 50*q2_matrix[,1] + 2*(q2_matrix[,1]**2) - 25*q2_matrix[,2] + q2_matrix[,2]**2
 q2_matrix <- cbind(q2_matrix, Z)
+save(q2_matrix, file = "C:/Users/ofior/Documents/5225/Owen5225/HW2/Matrix.RData")
 ```
 
 #2B
 ```{r}
 q2_df <- data.frame(X,Y,Z)
+save(q2_df, file = "C:/Users/ofior/Documents/5225/Owen5225/HW2/DF.RData") 
 ```
 
 #2C
@@ -27,10 +29,12 @@ q2_lst <- list(X = c(1,3,5,9), Y = c(2,6,9,11))
 Z <- 100 + 50*q2_lst$X + 2*(q2_lst$X**2) - 25*q2_lst$Y + q2_lst$Y**2
 q2_lst$Z <- Z
 q2_lst
+save(q2_lst, file = "C:/Users/ofior/Documents/5225/Owen5225/HW2/Lst.RData") 
 ```
 
 #2D
 ```{r}
+load("DF.RData")
 str(q2_df)
 ```
 
@@ -65,8 +69,15 @@ print(paste(mkt$Stock, "is bought at", paste("$",prettyNum(mkt$PurchasePrice,big
 
 #7A
 ```{r}
-bank <- suppressWarnings(read.fwf("../STAT5225/Data/bankdata_r.txt", widths = c(14, 1, 5, 8, 4), col.names =
+bank <- suppressWarnings(read.fwf("../../STAT5225/Data/bankdata_r.txt", widths = c(14, 1, 5, 8, 4), col.names =
                                     c("Name", "Gender", "ID", "Balance", "CreditHistory"), skip = 1, n = 3))
+bank$Gender[bank$Gender == "M"] <- "Male"
+bank$Gender[bank$Gender == "F"] <- "Female"
+bank$Gender <- factor(bank$Gender)
+
+bank$CreditHistory[bank$CreditHistory == "GOOD"] <- "Good"
+bank$CreditHistory[bank$CreditHistory == "MED"] <- "Medium"
+bank$CreditHistory <- factor(bank$CreditHistory, order = TRUE, levels = c("Medium", "Good"))
 ```
 
 #7B
