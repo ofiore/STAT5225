@@ -1,0 +1,108 @@
+---
+title: "HW4"
+author: "Owen Fiore"
+date: "2023-02-24"
+output: pdf_document
+---
+
+#3
+```{r}
+age <- c(12,12,13,13,12,13)
+quiz <- c("A", "B", "C", "A", "F", "B")
+mid <- c(92,88,78,92,55,88)
+final <- c(95, 88, 75, 93, 50, 82)
+schools <- data.frame(age, quiz, mid, final)
+```
+
+#3A
+```{r}
+schools$grade[schools$age == 12] <- 6
+schools$grade[schools$age == 13] <- 8
+schools
+```
+
+#3B
+```{r}
+library(dplyr)
+#schools$course[schools$quiz == "A"] <- .2*.95 + .3*school$quiz + .5*schools$final
+#schools <- transform(schools, course = ifelse(quiz =="A", (.95*.2 + .3*quiz), 10 ))
+schools <- schools %>%
+  mutate(course = case_when(schools$quiz == "A" ~ 95*.2 + .3*mid+.5*final,
+         schools$quiz == "B" ~ 85*.2 + .3*mid+.5*final,
+         schools$quiz == "C" ~ 75*.2 + .3*mid+.5*final,
+         schools$quiz == "D" ~ 70*.2 + .3*mid+.5*final,
+         schools$quiz == "F" ~ 65*.2 + .3*mid+.5*final))
+schools
+```
+
+#3C
+```{r}
+schools$FinalGrade[97 <= schools$course & schools$course >= 100] <- "A+"
+schools$FinalGrade[93 <= schools$course & schools$course < 97] <- "A"
+schools$FinalGrade[90 <= schools$course & schools$course < 93] <- "A-"
+schools$FinalGrade[87 <= schools$course & schools$course < 90] <- "B+"
+schools$FinalGrade[83 <= schools$course & schools$course < 87] <- "B"
+schools$FinalGrade[80 <= schools$course & schools$course < 83] <- "B-"
+schools$FinalGrade[77 <= schools$course & schools$course < 80] <- "C+"
+schools$FinalGrade[73 <= schools$course & schools$course < 77] <- "C"
+schools$FinalGrade[70 <= schools$course & schools$course < 73] <- "C-"
+schools$FinalGrade[67 <= schools$course & schools$course < 70] <- "D+"
+schools$FinalGrade[63 <= schools$course & schools$course < 67] <- "D"
+schools$FinalGrade[60 <= schools$course & schools$course < 63] <- "D-"
+schools$FinalGrade[schools$course < 60] <- "F"
+schools
+```
+
+#3D
+```{r}
+any(is.na(schools))
+
+```
+
+#3E
+```{r}
+passed <- subset(schools, FinalGrade %in% c("A+", "A", "A-", "B+", "B", "B-","C+", "C", "C-", "D+", "D", "D-"))
+passed
+```
+
+#4
+```{r}
+sales <- read.csv("../../STAT5225/Data/Sales.csv")
+#View(sales)
+```
+
+#4A
+```{r}
+q_a <- subset(sales, Region == "North" & Quantity < 60)
+q_a
+```
+
+
+#6A
+```{r}
+for (N in 1:20){
+  cat(N, log(N),"\n")
+}
+```
+
+#6B
+```{r}
+for (N in 1:20){
+  cat(5*N, log(5*N), "\n")
+}
+```
+```{r}
+#By for loop
+x <- seq(0,1,by=0.05)
+y <- rep(1,21)
+for (i in 1:21){
+  y[i] <- log(x[i]/(1-x[i]))
+}
+plot(x,y, type = "l")
+
+#By0,1, by = 0.05 vectorized code
+x <- seq()
+y <- log(x/(1-x))
+plot(x,y, type = "l")
+```
+
