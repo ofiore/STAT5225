@@ -38,7 +38,12 @@ head(isTriangle)
 ```
 ```{r}
 library(Matrix)
-isTriangleMat <- Matrix(isTriangle, ncol=405, nrow=362) 
+isTriangleMat <- Matrix(isTriangle$Triangle, ncol=405, nrow=362) 
 ```
 
+```{r}
+pdf(file = "FioreOwen_HW4.pdf", width = 4, height = 4)
+image(isTriangleMat)
+dev.off()
+```
 
