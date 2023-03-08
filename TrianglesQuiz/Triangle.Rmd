@@ -1,0 +1,44 @@
+---
+title: "TrianglesQuiz"
+author: "Owen Fiore"
+date: "2023-03-07"
+output: pdf_document
+---
+
+```{r}
+tri <- read.csv("../../STAT5225/Data/triangles.csv", header = F)
+colnames(tri) <- c("T1", "T2", "T3")
+head(tri)
+```
+
+```{r}
+len <- dim(tri)[1]
+for (i in 1:len){
+  if (tri[i,1] > tri[i,2] + tri[i,3] | tri[i,2] > tri[i,1] + tri[i,3] | tri[i,3] > tri[i,1] + tri[i,2]){
+    tri[i,4] <- 0
+  }
+  else{
+    tri[i,4] <- 1
+  }
+}
+head(tri)
+
+```
+
+```{r}
+colnames(tri) <- c("T1", "T2", "T3", "isTriangle")
+write.csv(tri$isTriangle, file = "isTriangle.csv",row.names =F)
+```
+
+```{r}
+isTriangle <- read.csv("isTriangle.csv", header = T)
+dim(isTriangle)
+colnames(isTriangle) <- "Triangle"
+head(isTriangle)
+```
+```{r}
+library(Matrix)
+isTriangleMat <- Matrix(isTriangle, ncol=405, nrow=362) 
+```
+
+
