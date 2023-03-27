@@ -1,0 +1,141 @@
+---
+title: "HW5"
+author: "Owen Fiore"
+date: "2023-03-26"
+output: pdf_document
+---
+
+```{r}
+int2Roman <- function(x){
+  roman <- ""
+  while(x >= 1000){
+    x <- x-1000
+    roman <- paste(roman,"M",sep="")
+  }
+  while(x >= 900){
+    x <- x-900
+    roman <- paste(roman,"CM",sep="")
+  }
+  while(x >= 500){
+    x <- x-500
+    roman <- paste(roman,"D",sep="")
+  }
+  while(x >= 400){
+    x <- x-400
+    roman <- paste(roman,"CD",sep="")
+  }
+  while(x >= 100){
+    x <- x-100
+    roman <- paste(roman,"C",sep="")
+  }
+  while(x >= 90){
+    x <- x-90
+    roman <- paste(roman,"XC",sep="")
+  }
+  while(x >= 50){
+    x <- x-50
+    roman <- paste(roman,"L",sep="")
+  }
+  while(x >= 40){
+    x <- x-40
+    roman <- paste(roman,"XL",sep="")
+  }
+  while(x >= 10){
+    x <- x-10
+    roman <- paste(roman,"X",sep="")
+  }
+  while(x >= 9){
+    x <- x-400
+    roman <- paste(roman,"IX",sep="")
+  }
+  while(x >= 5){
+    x <- x-5
+    roman <- paste(roman,"V",sep="")
+  }
+  while(x >= 4){
+    x <- x-4
+    roman <- paste(roman,"IV",sep="")
+  }
+  while(x >= 1){
+    x <- x-1
+    roman <- paste(roman,"I",sep="")
+  }
+  return(roman)
+}
+print(int2Roman(1994))
+```
+#3
+```{r}
+fact <- function(num) {
+  if (num == 1) {
+    return(num)
+  }
+  return(num * fact(num-1))
+}
+
+fact(4)
+fact(1)
+fact(10)
+fact(0)
+fact(2.5)
+fact(-2)
+
+fact <- function(num) {
+  if (num %% 1 !=0){
+    return("Enter an integer")
+  }
+  if (num <= 1) {
+    return(num)
+  }
+  return(num * fact(num-1))
+}
+fact(4)
+fact(1)
+fact(10)
+fact(0)
+fact(2.5)
+fact(-2)
+fact(1000)/fact(999)
+```
+
+
+
+
+
+```{r}
+levenshtein_distance <- function(s1, s2) {
+  distances <- matrix(0, nrow = nchar(s1) + 1, ncol = nchar(s2) + 1)
+  
+  distances[1,] <- 0:nchar(s2)
+  distances[,1] <- 0:nchar(s1)
+  
+
+  for (i in 2:(nchar(s1) + 1)) {
+    for (j in 2:(nchar(s2) + 1)) {
+      if (substr(s1, i - 1, i - 1) == substr(s2, j - 1, j - 1)) {
+        distances[i,j] <- distances[i-1,j-1]
+      } else {
+        distances[i,j] <- min(distances[i-1,j], distances[i,j-1], distances[i-1,j-1]) + 1
+      }
+    }
+  }
+  return(distances[nchar(s1) + 1, nchar(s2) + 1])
+}
+levenshtein_distance("kitten", "sitting")
+levenshtein_distance("a", "b")
+levenshtein_distance("fade", "made")
+levenshtein_distance("one", "twentyone")
+levenshtein_distance("ninety nine", "ninetynine")
+levenshtein_distance("read", "four")
+levenshtein_distance("dog", "god")
+levenshtein_distance("deriviative", "integral")
+levenshtein_distance("bud", "busch")
+levenshtein_distance("Germany", "Uruguay")
+levenshtein_distance("Afghanistan", "Pakistan")
+levenshtein_distance("CT", "C")
+levenshtein_distance("Haim", "Bar")
+levenshtein_distance("Owen", "Fiore")
+levenshtein_distance("Homer", "Babbidge")
+
+```
+
