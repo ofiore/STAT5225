@@ -1,0 +1,102 @@
+\documentclass[12pt, letterpaper, titlepage]{article}
+
+\usepackage{amsmath, amsfonts}
+\usepackage{booktabs}
+\usepackage{amsthm}
+\usepackage{graphicx}
+\usepackage[margin=1in]{geometry}
+\usepackage{hyperref}
+\usepackage{cleveref}
+\hypersetup{colorlinks = true, linkcolor = blue, citecolor=blue, urlcolor = blue}
+\usepackage{natbib}
+\usepackage{float}
+\usepackage{setspace}
+\usepackage{pdfpages}
+\usepackage[pagewise]{lineno}
+\usepackage{mwe}
+\usepackage{comment}
+%\linenumbers*[1]
+% %% patches to make lineno work better with amsmath
+\newcommand*\patchAmsMathEnvironmentForLineno[1]{%
+ \expandafter\let\csname old#1\expandafter\endcsname\csname #1\endcsname
+ \expandafter\let\csname oldend#1\expandafter\endcsname\csname end#1\endcsname
+ \renewenvironment{#1}%
+ {\linenomath\csname old#1\endcsname}%
+ {\csname oldend#1\endcsname\endlinenomath}}%
+\newcommand*\patchBothAmsMathEnvironmentsForLineno[1]{%
+ \patchAmsMathEnvironmentForLineno{#1}%
+ \patchAmsMathEnvironmentForLineno{#1*}}%
+
+\AtBeginDocument{%
+ \patchBothAmsMathEnvironmentsForLineno{equation}%
+ \patchBothAmsMathEnvironmentsForLineno{align}%
+ \patchBothAmsMathEnvironmentsForLineno{flalign}%
+ \patchBothAmsMathEnvironmentsForLineno{alignat}%
+ \patchBothAmsMathEnvironmentsForLineno{gather}%
+ \patchBothAmsMathEnvironmentsForLineno{multline}%
+}
+
+% control floats
+\renewcommand\floatpagefraction{.9}
+\renewcommand\topfraction{.9}
+\renewcommand\bottomfraction{.9}
+\renewcommand\textfraction{.1}
+\setcounter{totalnumber}{50}
+\setcounter{topnumber}{50}
+\setcounter{bottomnumber}{50}
+
+\newcommand{\jy}[1]{\textcolor{blue}{JY: #1}}
+\newcommand{\eds}[1]{\textcolor{red}{EDS: (#1)}}
+\newcommand{\of}[1]{\textcolor{violet}{OF: #1}}
+
+
+\title{STAT 5225 Final Project} 
+
+\author{Owen Fiore\\
+%   \href{mailto:owen.fiore@uconn.edu}
+% {\nolinkurl{owen.fiore@uconn.edu}}\\
+}
+\date{}
+
+\begin{document}
+\maketitle
+
+
+\begin{abstract}
+
+
+\end{abstract}
+
+\doublespace
+
+
+
+\section{Introduction} \label{sec:intro}
+
+
+\section{Data} \label{sec:Data}
+
+
+
+\section{Methods} \label{sec:Methods}
+
+
+
+
+
+\section{Results} \label{sec:Results}
+
+
+
+
+\section{Discussion}\label{sec:Discussion}
+
+
+\section{Appendix}
+
+\jy{Go over the references to see clues to clean in the bib source}
+\bibliographystyle{chicago}
+\bibliography{references.bib}
+
+
+\end{document}

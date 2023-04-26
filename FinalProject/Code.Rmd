@@ -1,0 +1,26 @@
+---
+title: "Code"
+author: "Owen Fiore"
+date: "2023-04-26"
+output: pdf_document
+---
+```{r}
+adrd <- read.csv("Accidental_Drug_Related_Deaths_2012-2021.csv")
+```
+
+```{r}
+library(lubridate)
+dates <- mdy(adrd$Date)
+year <- year(dates)
+month <- month(dates)
+
+adrd$year <- year
+adrd$month <- month
+head(adrd)
+```
+```{r}
+library(ggplot2)
+
+ggplot(adrd, aes(x=year)) + geom_histogram() + labs(title = "Drug Overdoses in CT", x = "Year", y = "Drug Overdoses")
+```
+
