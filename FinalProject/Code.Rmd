@@ -14,13 +14,202 @@ dates <- mdy(adrd$Date)
 year <- year(dates)
 month <- month(dates)
 
-adrd$year <- year
-adrd$month <- month
+adrd$odyear <- year
+adrd$odmonth <- month
 head(adrd)
+```
+
+
+
+```{r}
+library(ggplot2)
+ggsave(filename="OD_per_year.pdf", height = 4, width = 6)
+ggplot(adrd, aes(x=year)) + geom_histogram(fill = "orange") + labs(x = "Year", y = "Drug Overdoses")
+```
+
+```{r}
+twelve <- subset(adrd, adrd$year == 2012)
+ggplot(twelve, aes(x=month)) + geom_histogram() + labs(title = "Drug Overdoses in CT", x = "Month", y = "Drug Overdoses")
+```
+
+```{r}
+library(dplyr)
+library(ggplot2)
+
+# Convert the years column to a date format
+adrd <- adrd %>%
+  mutate(date = as.Date(paste(odyear, "01", "01", sep = "-"), format = "%Y-%m-%d"))
+
+# Group the data by year and month
+adrd_monthly <- adrd %>%
+  group_by(odyear, odmonth) %>%
+  summarise(count = n())
+
+# Plot the data as a line graph
+ggsave(filename="Colorline.pdf", width=7, height=5)
+ggplot(adrd_monthly, aes(x = odmonth, y = count, group = odyear, color = factor(odyear))) +
+  geom_line() +
+  labs(x = "Month", y = "Overdoses") +
+  scale_x_continuous(breaks = 1:12, 
+                     labels = month.name[1:12]) + theme(axis.text.x=element_text(angle=45))
+```
+```{r}
+adrd$cummon <- 0
+adrd$cummon <- ifelse(adrd$odyear == 2012, adrd$odmonth, (adrd$odyear - 2012) * 12 + adrd$odmonth)
+head(adrd$cummon)
+```
+
+```{r}
+adrd$Date <- as.Date(adrd$Date, "%m/%d/%Y")
+
+# Create a new data frame with monthly counts
+monthly_counts <- data.frame(month_year = seq(as.Date("2012/01/01"), as.Date("2021/12/01"), by = "month"))
+monthly_counts$n_overdoses <- sapply(monthly_counts$month_year, function(x) sum(adrd$Date >= x & adrd$Date < x + months(1)))
+
+# Plot the data as a line graph
+ggplot(monthly_counts, aes(x = month_year, y = n_overdoses, color = factor(year(month_year)))) +
+  geom_line()
 ```
 ```{r}
 library(ggplot2)
+adrd$Date <- as.Date(adrd$Date, "%m/%d/%Y")
 
-ggplot(adrd, aes(x=year)) + geom_histogram() + labs(title = "Drug Overdoses in CT", x = "Year", y = "Drug Overdoses")
+# Create a new data frame with monthly counts
+monthly_counts <- data.frame(month_year = seq(as.Date("2012/01/01"), as.Date("2021/12/01"), by = "month"))
+monthly_counts$n_overdoses <- sapply(monthly_counts$month_year, function(x) sum(adrd$Date >= x & adrd$Date < x + months(1)))
+```
+
+```{r}
+my.model <- lm(n_overdoses ~ month_year, data = monthly_counts)
+slope <- round(coef(my.model)[2],2)
+intercept <- round(coef(my.model)[1],2)
+summary(my.model)
+```
+
+
+```{r}
+ggsave(filename="Trendline.pdf", height = 4, width = 4)
+ggplot(monthly_counts, aes(x = month_year, y = n_overdoses)) +
+  geom_line() +
+  geom_smooth(method = "lm", se = FALSE, color = "red") +
+  #geom_smooth(method = "lm", se = FALSE, color = "blue", formula = n_overdoses ~ poly(month_year, 2, raw=TRUE)) +
+  labs(x = "Month", y = "Drug Overdoses") +
+  scale_x_date(date_labels = "%Y", date_breaks = "1 year") + annotate("text", x = as.Date("2012-01-01"), y = max(monthly_counts$n_overdoses),
+           label = paste0("y = ", 30.4*slope, "x + ", intercept), color = "red", hjust = 0, vjust = 1)
+```
+
+
+
+
+```{r}
+households <- read.csv("households.txt",sep="\t", header = FALSE)
+house <- subset(households, select = -c(V1, V3, V4,V5))
+colnames(house) <- c("Town", "PerCapitaIncome", "MedHouseIncome", "MedFamIncome","Population", "NumHouse")
+house$Town <- toupper(house$Town)
+head(house)
+```
+
+
+```{r}
+library(dplyr)
+adrd$Town <- adrd$Residence.City
+adrd_full <- left_join(adrd, house, by = "Town")
+head(adrd_full, n=30)
+```
+```{r}
+library(caret)
+adrd_vars <- c("Sex", "Race")
+adrd_full[, adrd_vars] <- lapply(adrd_full[, adrd_vars], factor)
+dummy <- predict(dummyVars(~., adrd_full), newdata =adrd_full)
+```
+```{r}
+adrd_full[,23:44] <- lapply(adrd_full[,23:44], function(x) ifelse(x == "Y", 1, 0))
+head(adrd_full)
+```
+
+```{r}
+adrd_full[, c("PerCapitaIncome", "MedHouseIncome", "MedFamIncome", "Population", "NumHouse")] <- lapply(adrd_full[, c("PerCapitaIncome", "MedHouseIncome", "MedFamIncome", "Population", "NumHouse")], function(x) as.numeric(gsub("[(),$]", "", x)))
+str(adrd_full)
+```
+
+
+```{r}
+adrd_cluster <- as.data.frame(adrd_full[,c(3,23:25,54:58)])
+adrd_cluster[is.infinite(adrd_cluster)] <- NA
+adrd_cluster <- na.omit(adrd_cluster)
+adrd_scaled <- scale(adrd_cluster)
+distances <- dist(adrd_cluster)
+hier_clus <- hclust(distances, method = "average")
+plot(hier_clus, hang = -1)
+```
+```{r}
+adrd_cluster <- adrd_full[,c(23:25)]
+colnames(adrd_cluster) <- c("PCI", "MHI", "MFI")
+adrd_cluster <- na.omit(adrd_cluster)
+adrd_scaled <- scale(adrd_cluster)
+distances <- dist(adrd_scaled)
+hier_clus <- hclust(distances, method = "average")
+plot(hier_clus, hang = -1, labels = FALSE, main = "Hierarchical Clustering", sub = NULL, ylab = "Distance", xlab = NULL, cex = 0.8, height = 50)
+```
+```{r}
+
+```
+
+
+```{r}
+library(dendextend)
+dend <- as.dendrogram(hier_clus)
+dend <- color_branches(dend, k = 4)
+labels_colors(dend) <- cutree(hier_clus, k = 4)
+par(mar = c(5, 5, 2, 5))
+plot(dend, horiz = FALSE, main = "Dendrogram of Hierarchical Clustering", cex=0.8)
+```
+
+
+```{r}
+library(NbClust)
+nc <- NbClust(adrd_scaled, distance = "euclidean", min.nc =2, max.nc = 15, method = "average")
+table(nc$Best.n[1,])
+barplot(table(nc$Best.n[1,]),
+xlab="Number of Clusters", ylab="Number of Criteria",
+main="Number of Clusters Chosen by 26 Criteria")
+
+```
+```{r}
+ggsave(filename="AgeHist.pdf", width= 5, height = 5)
+ggplot(adrd, aes(x = Age)) +
+  geom_histogram(fill = "cornflowerblue", color = "black", binwidth=2) + 
+  labs(y="Count")
+```
+
+```{r}
+ggsave("SexHist.pdf", height =4, width = 4)
+ggplot(data = adrd_full, aes(x = Sex)) +
+  geom_bar(aes(fill = Sex), position = "identity") +
+  scale_fill_manual(values = c("royalblue", "pink"),
+                    labels = c("Male", "Female")) +
+  labs(x = "Sex",
+       y = "Count") +
+  theme_minimal() +
+  geom_text(stat = "count", aes(label = ..count..), vjust = -0.5, color = "black", size = 4)
+```
+
+```{r}
+ggsave("RaceHist.pdf", width=7,height=7)
+ggplot(data = adrd_full, aes(x = Race)) +
+  geom_bar(aes(fill = Race), position = "identity") +
+  labs(,y = "Count") +
+  theme_minimal() +
+  geom_text(stat = "count", aes(label = ..count..), vjust =0, color = "black", size = 4) +
+  theme(axis.text.x = element_text(angle = 90, hjust = 1, vjust = 1))
+```
+```{r}
+tail(adrd_full, n =10)
+```
+```{r}
+ggsave(filename="MoneyHist.pdf", width= 5, height = 5)
+ggplot(adrd_full, aes(x = PerCapitaIncome)) +
+  geom_histogram(fill = "purple", color = "black", binwidth=5000) + 
+  labs(y="Count", x = "Per Capita Income")
 ```
 
