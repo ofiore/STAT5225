@@ -117,10 +117,9 @@ adrd_full <- left_join(adrd, house, by = "Town")
 head(adrd_full, n=30)
 ```
 ```{r}
-library(caret)
 adrd_vars <- c("Sex", "Race")
 adrd_full[, adrd_vars] <- lapply(adrd_full[, adrd_vars], factor)
-dummy <- predict(dummyVars(~., adrd_full), newdata =adrd_full)
+#dummy <- predict(dummyVars(~., adrd_full), newdata =adrd_full)
 ```
 ```{r}
 adrd_full[,23:44] <- lapply(adrd_full[,23:44], function(x) ifelse(x == "Y", 1, 0))
